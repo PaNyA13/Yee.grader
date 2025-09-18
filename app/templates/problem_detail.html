@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ problem.title }}</h1>
+<p><strong>Max Score:</strong> {{ problem.max_score }} points</p>
+<p><strong>Time Limit:</strong> {{ problem.time_limit_ms }} ms</p>
+<p><strong>Memory Limit:</strong> {{ problem.memory_limit_mb }} MB</p>
+<p><strong>Testcases:</strong> {{ problem.testcase_count }}</p>
+
+{% if problem.description %}
+<div class="description">
+  <h3>Description</h3>
+  <p>{{ problem.description }}</p>
+</div>
+{% endif %}
+
+{% if problem.pdf_path %}
+<div class="pdf-section">
+  <h3>Problem Statement</h3>
+  <a href="/problems/{{ problem.id }}/pdf" target="_blank" class="pdf-link">📄 View PDF</a>
+</div>
+{% endif %}
+
+{% if user and user.is_admin %}
+<div class="admin-section">
+  <h3>Admin Actions</h3>
+  <a href="/problems/{{ problem.id }}/edit-testcases" class="admin-link">🔧 Edit Testcases</a>
+</div>
+{% endif %}
+
+<h2>Submit Solution</h2>
+<form action="/submissions/submit" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="problem_id" value="{{ problem.id }}" />
+  
+  <label>Language</label>
+  <select name="language">
+    <option value="c">C (C17)</option>
+    <option value="cpp">C++ (C++17)</option>
+  </select>
+  
+  <label>Source Code File</label>
+  <input type="file" name="source" required />
+  
+  <button type="submit">Submit</button>
+</form>
+
+<div class="scoring-info">
+  <h3>Scoring System</h3>
+  <ul>
+    <li>Full score: {{ problem.max_score }} points</li>
+    <li>Partial scoring: Based on testcases passed</li>
+    <li>No penalty for wrong submissions</li>
+  </ul>
+</div>
+{% endblock %}

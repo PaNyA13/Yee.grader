@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Upload New Problem</h1>
+<form action="/problems/upload" method="post" enctype="multipart/form-data">
+  <label>Problem Title</label>
+  <input type="text" name="title" required />
+  
+  <label>Slug (URL-friendly name)</label>
+  <input type="text" name="slug" required />
+  
+  <label>Description (optional)</label>
+  <textarea name="description" rows="3"></textarea>
+  
+  <label>Time Limit (ms)</label>
+  <input type="number" name="time_limit_ms" value="2000" />
+  
+  <label>Memory Limit (MB)</label>
+  <input type="number" name="memory_limit_mb" value="256" />
+  
+  <label>Max Score</label>
+  <input type="number" name="max_score" value="100" />
+  
+  <label>Problem Statement (PDF)</label>
+  <input type="file" name="problem_pdf" accept=".pdf" required />
+  
+  <label>Testcases (ZIP)</label>
+  <input type="file" name="testcases_zip" accept=".zip" required />
+  
+  <button type="submit">Upload Problem</button>
+</form>
+
+<div class="help-section">
+  <h3>Testcase Format</h3>
+  <p>Create a ZIP file containing pairs of input/output files:</p>
+  <ul>
+    <li>input1.txt, output1.txt</li>
+    <li>input2.txt, output2.txt</li>
+    <li>input3.txt, output3.txt</li>
+    <li>... and so on</li>
+  </ul>
+  
+  <h3>Example Testcase</h3>
+  <p><strong>input1.txt:</strong></p>
+  <pre>1 2</pre>
+  <p><strong>output1.txt:</strong></p>
+  <pre>3</pre>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Submissions</h1>
+<table>
+  <tr>
+    <th>ID</th><th>User</th><th>Problem</th><th>Lang</th><th>Status</th>
+    <th>Score</th><th>Tests</th>
+  </tr>
+  {% for s in submissions %}
+  <tr class="status-{{ s.status }}">
+    <td>{{ s.id }}</td>
+    <td>{{ s.current_display_name }}</td>
+    <td>{{ s.problem_title }}</td>
+    <td>{{ s.language }}</td>
+    <td class="status">{{ s.status }}</td>
+    <td>{{ s.score }}/{{ s.max_score }}</td>
+    <td>{{ s.passed_tests }}/{{ s.total_tests }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

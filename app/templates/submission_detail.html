@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Submission #{{ submission.id }}</h1>
+
+<div class="submission-info">
+  <h3>Submission Details</h3>
+  <table>
+    <tr><td><strong>ID:</strong></td><td>{{ submission.id }}</td></tr>
+    <tr><td><strong>User:</strong></td><td>{{ submission.user_id }}</td></tr>
+    <tr><td><strong>Problem:</strong></td><td><a href="/problems/{{ submission.problem_id }}">Problem {{ submission.problem_id }}</a></td></tr>
+    <tr><td><strong>Language:</strong></td><td>{{ submission.language.upper() }}</td></tr>
+    <tr><td><strong>Status:</strong></td><td><span class="status status-{{ submission.status }}">{{ submission.status.replace('_', ' ').title() }}</span></td></tr>
+    <tr><td><strong>Score:</strong></td><td>{{ submission.score }}/{{ submission.max_score if submission.max_score else 'N/A' }}</td></tr>
+    <tr><td><strong>Tests Passed:</strong></td><td>{{ submission.passed_tests }}/{{ submission.total_tests if submission.total_tests else 'N/A' }}</td></tr>
+    <tr><td><strong>Execution Time:</strong></td><td>{{ submission.exec_time_ms }}ms</td></tr>
+    <tr><td><strong>Memory Used:</strong></td><td>{{ submission.memory_used_kb if submission.memory_used_kb else 'N/A' }} KB</td></tr>
+    <tr><td><strong>Submitted:</strong></td><td>{{ submission.created_at.strftime('%Y-%m-%d %H:%M:%S') if submission.created_at else 'N/A' }}</td></tr>
+  </table>
+</div>
+
+{% if submission.error_message %}
+<div class="error">
+  <h3>Error Message</h3>
+  <pre>{{ submission.error_message }}</pre>
+</div>
+{% endif %}
+
+{% if source_code %}
+<div class="source-code">
+  <h3>Source Code</h3>
+  <pre><code>{{ source_code }}</code></pre>
+</div>
+{% endif %}
+
+{% if user and user.is_admin %}
+<div class="admin-section">
+  <h3>Admin Actions</h3>
+  <form action="/submissions/{{ submission.id }}/rerun" method="post" style="display: inline;">
+    <button type="submit" class="admin-link">🔄 Rerun Submission</button>
+  </form>
+</div>
+{% endif %}
+
+<div class="help-section">
+  <h3>Navigation</h3>
+  <a href="/submissions/">← All Submissions</a> |
+  <a href="/submissions/my">My Submissions</a> |
+  <a href="/problems/{{ submission.problem_id }}">View Problem</a>
+</div>
+{% endblock %}

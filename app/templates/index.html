@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Problems</h1>
+
+<!-- Search Box -->
+<div class="search-container" style="margin-bottom: 20px;">
+  <div style="display: flex; gap: 10px; align-items: center;">
+    <input type="text" id="searchInput" placeholder="Search problems..." value="{{ search_query or '' }}" 
+           style="flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px;">
+    <button id="searchButton" onclick="performSearch()" style="padding: 10px 20px; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); 
+            color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+      <span id="searchText">🔍 Search</span>
+      <span id="searchLoading" style="display: none;">⏳ Searching...</span>
+    </button>
+    {% if search_query %}
+    <a href="/problems/" style="padding: 10px 15px; background: #6b7280; color: white; text-decoration: none; 
+       border-radius: 8px; font-weight: 600;">
+      ✕ Clear
+    </a>
+    {% endif %}
+  </div>
+</div>
+
+
+{% if problems %}
+<table>
+  <tr><th>Status</th><th>ID</th><th>Title</th><th>Max Score</th><th>Testcases</th><th>Actions</th></tr>
+  {% for p in problems %}
+  <tr>
+    <td>
+      {% if p.status == 'solved' %}
+        <span class="status-icon status-solved">✓</span>
+      {% elif p.status == 'partial' %}
+        <span class="status-icon status-partial">△</span>
+      {% elif p.status == 'failed' %}
+        <span class="status-icon status-failed">✗</span>
+      {% else %}
+        <span class="status-icon status-not-attempted">-</span>
+      {% endif %}
+    </td>
+    <td>{{ p.id }}</td>
+    <td>{{ p.title }}</td>
+    <td>{{ p.max_score }}</td>
+    <td>{{ p.testcase_count }}</td>
+    <td class="actions-cell">
+      <a href="/problems/{{ p.id }}" class="action-link view-link" title="View Problem">🧠</a>
+      {% if p.pdf_path %}
+      <a href="/problems/{{ p.id }}/pdf" target="_blank" class="action-link pdf-link" title="View PDF">📄</a>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>No problems yet.</p>
+{% endif %}
+
+<script>
+let searchTimeout;
+
+// Show loading indicator
+function showLoading() {
+    document.getElementById('searchText').style.display = 'none';
+    document.getElementById('searchLoading').style.display = 'inline';
+    document.getElementById('searchButton').disabled = true;
+}
+
+// Hide loading indicator
+function hideLoading() {
+    document.getElementById('searchText').style.display = 'inline';
+    document.getElementById('searchLoading').style.display = 'none';
+    document.getElementById('searchButton').disabled = false;
+}
+
+// Real-time search function
+function performSearch() {
+    const searchInput = document.getElementById('searchInput');
+    const searchTerm = searchInput.value.trim();
+    
+    showLoading();
+    
+    // Redirect to problems page with search parameter
+    if (searchTerm) {
+        window.location.href = `/problems/?search=${encodeURIComponent(searchTerm)}`;
+    } else {
+        window.location.href = '/problems/';
+    }
+}
+
+// Real-time search on input (with debounce)
+document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        performSearch();
+    }, 300); // 300ms delay (faster response)
+});
+
+// Search on Enter key
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        clearTimeout(searchTimeout);
+        performSearch();
+    }
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    hideLoading();
+});
+</script>
+{% endblock %}

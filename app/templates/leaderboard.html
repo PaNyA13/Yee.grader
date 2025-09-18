@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="leaderboard-header">
+  <h1>🏆 Leaderboard</h1>
+  <p class="leaderboard-subtitle">Competitive Programming Rankings</p>
+  {% if user and user.is_admin %}
+  <div class="admin-notice">
+    <p>ℹ️ Admins are excluded from the leaderboard</p>
+  </div>
+  {% endif %}
+</div>
+
+<div class="leaderboard-stats">
+  <div class="stat-card">
+    <div class="stat-number">{{ stats|length }}</div>
+    <div class="stat-label">Participants</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ stats[0].total_score if stats else 0 }}</div>
+    <div class="stat-label">Highest Score</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ stats[0].problems_solved if stats else 0 }}</div>
+    <div class="stat-label">Most Solved</div>
+  </div>
+</div>
+
+<div class="leaderboard-table-container">
+  <table class="leaderboard-table">
+    <thead>
+      <tr>
+        <th class="rank-col">#</th>
+        <th class="user-col">User</th>
+        <th class="score-col">Score</th>
+        <th class="solved-col">Solved</th>
+        <th class="submissions-col">Submissions</th>
+        <th class="problems-col">Problems</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for stat in stats %}
+      <tr class="leaderboard-row {% if loop.index <= 3 %}top-{{ loop.index }}{% endif %}">
+        <td class="rank-cell">
+          {% if loop.index == 1 %}
+            <span class="rank-1">🥇</span>
+          {% elif loop.index == 2 %}
+            <span class="rank-2">🥈</span>
+          {% elif loop.index == 3 %}
+            <span class="rank-3">🥉</span>
+          {% else %}
+            <span class="rank-number">{{ loop.index }}</span>
+          {% endif %}
+        </td>
+        <td class="user-cell">
+          <div class="user-info">
+            <div class="user-name">{{ stat.display_name }}</div>
+            <div class="user-stats">
+              <span class="user-score">{{ stat.total_score or 0 }} pts</span>
+            </div>
+          </div>
+        </td>
+        <td class="score-cell">
+          <div class="score-display">
+            <span class="score-value">{{ stat.total_score or 0 }}</span>
+            <span class="score-label">points</span>
+          </div>
+        </td>
+        <td class="solved-cell">
+          <div class="solved-display">
+            <span class="solved-number">{{ stat.problems_solved or 0 }}</span>
+            <span class="solved-label">problems</span>
+          </div>
+        </td>
+        <td class="submissions-cell">
+          <span class="submissions-count">{{ stat.total_submissions or 0 }}</span>
+        </td>
+        <td class="problems-cell">
+          <div class="problems-grid">
+            {% for problem in stat.solved_problems %}
+              <div class="problem-score">
+                {% if problem.score == problem.max_score %}
+                  <span class="problem-full">P{{ problem.problem_id }}</span>
+                {% elif problem.score > 0 %}
+                  <span class="problem-partial">P{{ problem.problem_id }}</span>
+                {% else %}
+                  <span class="problem-failed">P{{ problem.problem_id }}</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="leaderboard-footer">
+  <p>Last updated: {{ current_time }}</p>
+</div>
+{% endblock %}

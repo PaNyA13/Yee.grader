@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>My Submissions</h1>
+{% if submissions %}
+<table>
+  <tr>
+    <th>ID</th><th>Problem</th><th>Language</th><th>Status</th><th>Score</th><th>Tests</th><th>Actions</th>
+  </tr>
+  {% for sub in submissions %}
+  <tr>
+    <td>{{ sub.id }}</td>
+    <td>
+      <a href="/problems/{{ sub.problem_id }}">{{ sub.problem_title }}</a>
+    </td>
+    <td>{{ sub.language.upper() }}</td>
+    <td>
+      <span class="status status-{{ sub.status }}">{{ sub.status.replace('_', ' ').title() }}</span>
+    </td>
+    <td>{{ sub.score }}/{{ sub.max_score if sub.max_score else 'N/A' }}</td>
+    <td>{{ sub.passed_tests }}/{{ sub.total_tests if sub.total_tests else 'N/A' }}</td>
+    <td>
+      <a href="/submissions/{{ sub.id }}">View Details</a>
+      {% if user and user.is_admin %}
+      <a href="/submissions/{{ sub.id }}/rerun">Rerun</a>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>No submissions yet.</p>
+{% endif %}
+{% endblock %}

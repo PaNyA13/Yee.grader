@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Edit Testcases - {{ problem.title }}</h1>
+
+<div class="help-section">
+  <h3>📝 How to Update Testcases</h3>
+  <p>Upload a new ZIP file containing testcases. The ZIP should contain:</p>
+  <ul>
+    <li><strong>Input files:</strong> test1.in, test2.in, test3.in, ...</li>
+    <li><strong>Output files:</strong> test1.out, test2.out, test3.out, ...</li>
+  </ul>
+  <p><strong>⚠️ Warning:</strong> This will replace ALL existing testcases and rerun ALL submissions for this problem!</p>
+</div>
+
+<form action="/problems/{{ problem.id }}/edit-testcases" method="post" enctype="multipart/form-data">
+  <label>New Testcases ZIP File</label>
+  <input type="file" name="testcases_zip" accept=".zip" required />
+  
+  <button type="submit" style="background: #dc2626; color: white;">
+    🔄 Update Testcases & Rerun All Submissions
+  </button>
+</form>
+
+<div class="scoring-info">
+  <h3>Current Problem Info</h3>
+  <ul>
+    <li><strong>Problem ID:</strong> {{ problem.id }}</li>
+    <li><strong>Current Testcases:</strong> {{ problem.testcase_count }}</li>
+    <li><strong>Max Score:</strong> {{ problem.max_score }}</li>
+  </ul>
+</div>
+
+<a href="/problems/{{ problem.id }}">← Back to Problem</a>
+{% endblock %}

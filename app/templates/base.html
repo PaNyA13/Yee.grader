@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CP Grader</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/problems/">Problems</a>
+      {% if user and user.is_admin %}
+      <a href="/problems/upload">Upload Problem</a>
+      {% endif %}
+      <a href="/submissions/">Submissions</a>
+      {% if user %}
+      <a href="/submissions/my">My Submissions</a>
+      {% endif %}
+      {% if not user.is_admin %}
+      <a href="/leaderboard/">Leaderboard</a>
+      {% endif %}
+      {% if user %}
+      <a href="/auth/profile">Profile ({{ user.display_name }})</a>
+      <a href="/auth/logout">Logout</a>
+      {% else %}
+      <a href="/auth/login">Login</a>
+      {% endif %}
+      <button id="dark-mode-toggle" class="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span id="dark-mode-icon">🌙</span>
+      </button>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  
+  <script>
+    // Dark mode functionality
+    function toggleDarkMode() {
+      const body = document.body;
+      const icon = document.getElementById('dark-mode-icon');
+      
+      if (body.classList.contains('dark-mode')) {
+        body.classList.remove('dark-mode');
+        icon.textContent = '🌙';
+        localStorage.setItem('darkMode', 'false');
+      } else {
+        body.classList.add('dark-mode');
+        icon.textContent = '☀️';
+        localStorage.setItem('darkMode', 'true');
+      }
+    }
+    
+    // Load dark mode preference on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      const darkMode = localStorage.getItem('darkMode');
+      const icon = document.getElementById('dark-mode-icon');
+      
+      if (darkMode === 'true') {
+        document.body.classList.add('dark-mode');
+        icon.textContent = '☀️';
+      }
+    });
+  </script>
+</body>
+</html>
